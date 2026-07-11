@@ -58,7 +58,18 @@ class Layer:
             if node in self.nodes:
                 self.nodes.remove(node)
 
-    def draw(self, surface):
+    def draw(self, surface, cam_x, cam_y):
         for node in self.nodes:
-            pg.draw.circle(surface, "black", node.getCenter(), node.getRadius())
-            pg.draw.circle(surface, "white", node.getCenter(), node.getRadius(), 3)
+            pg.draw.circle(
+                surface,
+                "black",
+                (node.getCenter()[0] + cam_x, node.getCenter()[1] + cam_y),
+                node.getRadius(),
+            )
+            pg.draw.circle(
+                surface,
+                "white",
+                (node.getCenter()[0] + cam_x, node.getCenter()[1] + cam_y),
+                node.getRadius(),
+                3,
+            )

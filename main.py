@@ -7,47 +7,67 @@ from layer import Layer
 from network import Network
 
 
-def main():
-    pg.init()
-    pg.font.init()
+class Simulation:
+    def __init__(self):
+        pg.init()
+        pg.font.init()
 
-    font = pg.font.SysFont("arial", 20, True)
+        self.font = pg.font.SysFont("arial", 20, True)
 
-    WIDTH, HEIGHT = 1280, 720
-    FPS = 60
+        self.WIDTH, self.HEIGHT = 1280, 720
+        self.FPS = 60
 
-    screen = pg.display.set_mode((WIDTH, HEIGHT))
-    pg.display.set_caption("Neural Nodes")
-    pywinstyles.change_header_color(screen, "black")
+        self.camera_x = 0
+        self.camera_y = 0
+        self.panning = False
 
-    clock = pg.time.Clock()
+        self.screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
+        pg.display.set_caption("Neural Nodes")
+        pywinstyles.change_header_color(self.screen, "black")
 
-    network = Network(WIDTH, HEIGHT, 10)
+        self.clock = pg.time.Clock()
 
-    running = True
-    while running:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                running = False
-            if event.type == pg.MOUSEWHEEL:
-                if event.y > 0:
-                    network.zoomIn()
-                elif event.y < 0:
-                    network.zoomOut()
+        self.network = Network(self.WIDTH, self.HEIGHT, 10)
 
-        # -- Update --#
+    def run(self):
+        self.running = True
+        while self.running:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    self.running = False
 
-        # -- Draw --#
-        screen.fill("black")
+                elif event.type == pg.MOUSEWHEEL:
+                    if event.y > 0:
+                        self.network.zoomIn()
+                    elif event.y < 0:
+                        self.network.zoomOut()
 
-        network.draw(screen)
+                elif event.type == pg.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        self.panning = True
 
-        pg.display.flip()
-        clock.tick(FPS)
+                elif event.type == pg.MOUSEBUTTONUP:
+                    if event.button == 1:
+                        self.panning = False
 
-    pg.quit()
-    sys.exit()
+                elif event.type == pg.MOUSEMOTION and self.panning:
+                    self.camera_x += event.rel[0]
+                    self.camera_y += event.rel[1]
+
+            # -- Update --#
+
+            # -- Draw --#
+            self.screen.fill("black")
+
+            self.network.draw(self.screen, self.camera_x, self.camera_y)
+
+            pg.display.flip()
+            self.clock.tick(self.FPS)
+
+        pg.quit()
+        sys.exit()
 
 
 if __name__ == "__main__":
-    main()
+    sim = Simulation()
+    sim.run()

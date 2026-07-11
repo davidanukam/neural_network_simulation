@@ -10,6 +10,19 @@ class Network:
         self.layers: list[Layer] = []
         self.width: int = width
         self.height: int = height
+        self.colors = [
+            "red",
+            "orange",
+            "yellow",
+            "green",
+            "blue",
+            "purple",
+            "pink",
+            "brown",
+            "gray",
+            "white",
+        ]
+        self.network_line_width = 2
 
         self.setup(amount)
 
@@ -78,30 +91,22 @@ class Network:
 
             layer.fixSpacing(i, len(self.layers))
 
-    def draw(self, surface):
-        for i, layer in enumerate(self.layers):
-            layer.draw(surface)
-
-        colors = [
-            "red",
-            "orange",
-            "yellow",
-            "green",
-            "blue",
-            "purple",
-            "pink",
-            "brown",
-            "gray",
-            "white",
-        ]
-
+    def draw(self, surface, cam_x, cam_y):
         for i in range(len(self.layers) - 1):
             for j in range(len(self.layers[i].getNodes())):
                 for k in range(len(self.layers[i + 1].getNodes())):
                     pg.draw.line(
                         surface,
-                        colors[i],
-                        self.layers[i].getNodes()[j].getCenter(),
-                        self.layers[i + 1].getNodes()[k].getCenter(),
-                        5,
+                        self.colors[i],
+                        (
+                            self.layers[i].getNodes()[j].getCenter()[0] + cam_x,
+                            self.layers[i].getNodes()[j].getCenter()[1] + cam_y,
+                        ),
+                        (
+                            self.layers[i + 1].getNodes()[k].getCenter()[0] + cam_x,
+                            self.layers[i + 1].getNodes()[k].getCenter()[1] + cam_y,
+                        ),
+                        self.network_line_width,
                     )
+        for i, layer in enumerate(self.layers):
+            layer.draw(surface, cam_x, cam_y)

@@ -29,7 +29,7 @@ class Simulation:
         pywinstyles.change_header_color(self.screen, "black")
 
         # self.network = Network(self.WIDTH, self.HEIGHT, 100, 10)
-        self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 10, 10], 10)
+        self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 128, 10], 10)
 
     def run(self):
         self.running = True

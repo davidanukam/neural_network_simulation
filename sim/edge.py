@@ -58,36 +58,14 @@ class Edge:
         # return 0
 
         # NOTE: Remove edges that have offscreen endpoints
-        # if (
-        #     x1 + screen_radius >= 0
-        #     and x2 - screen_radius <= self.screenWidth
-        #     and y1 + screen_radius >= 0
-        #     and y2 - screen_radius <= self.screenHeight
-        # ) and (
-        #     x2 + screen_radius >= 0
-        #     and x1 - screen_radius <= self.screenWidth
-        #     and y2 + screen_radius >= 0
-        #     and y1 - screen_radius <= self.screenHeight
-        # ):
-        #     self.color = "white" if self.state == 0 else "yellow"
-
-        #     pg.draw.line(
-        #         surface,
-        #         self.color,
-        #         (x1, y1),
-        #         (x2, y2),
-        #         network_line_width,
-        #     )
-        #     return 1
-        # return 0
-
-        # NOTE: Remove edges that have offscreen RIGHT, BOTTOM and TOP endpoints
         if (
-            x2 - screen_radius <= self.screenWidth
+            x1 + screen_radius >= 0
+            and x2 - screen_radius <= self.screenWidth
             and y1 + screen_radius >= 0
-            # and y2 - screen_radius <= self.screenHeight
+            and y2 - screen_radius <= self.screenHeight
         ) and (
             x2 + screen_radius >= 0
+            and x1 - screen_radius <= self.screenWidth
             and y2 + screen_radius >= 0
             and y1 - screen_radius <= self.screenHeight
         ):
@@ -102,6 +80,28 @@ class Edge:
             )
             return 1
         return 0
+
+        # NOTE: Remove edges that have offscreen RIGHT, BOTTOM and TOP endpoints
+        # if (
+        #     x2 - screen_radius <= self.screenWidth
+        #     and y1 + screen_radius >= 0
+        #     # and y2 - screen_radius <= self.screenHeight
+        # ) and (
+        #     x2 + screen_radius >= 0
+        #     and y2 + screen_radius >= 0
+        #     and y1 - screen_radius <= self.screenHeight
+        # ):
+        #     self.color = "white" if self.state == 0 else "green"
+
+        #     pg.draw.line(
+        #         surface,
+        #         self.color,
+        #         (x1, y1),
+        #         (x2, y2),
+        #         network_line_width,
+        #     )
+        #     return 1
+        # return 0
 
         # # NOTE: Remove edges that have offscreen RIGHT & LEFT endpoints, and BOTTOM and TOP endpoints
         # if (

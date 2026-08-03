@@ -32,24 +32,26 @@ class Edge:
         screen_radius = max(1, int(node_radius * zoom))
 
         # NOTE: Keep all edges visible
+        # # Compute bounding box of the line segment
         # min_x = min(x1, x2) - screen_radius
         # max_x = max(x1, x2) + screen_radius
         # min_y = min(y1, y2) - screen_radius
         # max_y = max(y1, y2) + screen_radius
 
+        # # Draw ONLY IF the segment intersects the screen rect
         # if (
         #     max_x >= 0
         #     and min_x <= self.screenWidth
         #     and max_y >= 0
         #     and min_y <= self.screenHeight
         # ):
-        #     self.color = "white" if self.state == 0 else "yellow"
+        #     self.color = "white" if self.state == 0 else "green"
 
         #     pg.draw.line(
         #         surface,
         #         self.color,
-        #         (int(x1), int(y1)),
-        #         (int(x2), int(y2)),
+        #         (x1, y1),
+        #         (x2, y2),
         #         network_line_width,
         #     )
         #     return 1
@@ -89,7 +91,7 @@ class Edge:
             and y2 + screen_radius >= 0
             and y1 - screen_radius <= self.screenHeight
         ):
-            self.color = "white" if self.state == 0 else "yellow"
+            self.color = "white" if self.state == 0 else "green"
 
             pg.draw.line(
                 surface,
@@ -100,3 +102,27 @@ class Edge:
             )
             return 1
         return 0
+
+        # # NOTE: Remove edges that have offscreen RIGHT & LEFT endpoints, and BOTTOM and TOP endpoints
+        # if (
+        #     x1 + screen_radius >= 0
+        #     or x2 - screen_radius <= self.screenWidth
+        #     and y1 + screen_radius >= 0
+        #     or y2 - screen_radius <= self.screenHeight
+        # ) and (
+        #     x2 + screen_radius >= 0
+        #     or x1 - screen_radius <= self.screenWidth
+        #     and y2 + screen_radius >= 0
+        #     or y1 - screen_radius <= self.screenHeight
+        # ):
+        #     self.color = "white" if self.state == 0 else "green"
+
+        #     pg.draw.line(
+        #         surface,
+        #         self.color,
+        #         (x1, y1),
+        #         (x2, y2),
+        #         network_line_width,
+        #     )
+        #     return 1
+        # return 0

@@ -92,6 +92,10 @@ class Layer:
     def update(self):
         for node in self.nodes:
             node.setWeight(random.uniform(0.0, 1.0))
+            if random.randint(0, 1):
+                node.turn_on()
+            else:
+                node.turn_off()
 
     def draw(self, surface: pg.SurfaceType, zoom, cam_x, cam_y):
         for node in self.nodes:
@@ -113,7 +117,7 @@ class Layer:
                     screen_radius,
                 )
 
-                node.color = "white" if node.state == 0 else "yellow"
+                node.color = "white" if node.state == 0 else "green"
 
                 pg.draw.circle(
                     surface,

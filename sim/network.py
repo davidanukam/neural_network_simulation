@@ -96,9 +96,16 @@ class Network:
             if layer in self.layers:
                 self.layers.remove(layer)
 
+    # Note: Testing states and weights
     def update(self):
         for layer in self.layers:
             layer.update()
+
+        for edge in self.edges:
+            if random.randint(0, 1):
+                edge.turn_on()
+            else:
+                edge.turn_off()
 
     def draw(self, surface: pg.SurfaceType, zoom, cam_x, cam_y):
         num = 0

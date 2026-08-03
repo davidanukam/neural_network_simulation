@@ -30,12 +30,25 @@ class Network:
             layer = Layer(i)
             self.addLayer(layer)
 
+        # TODO: Used for centering each layer relative to the previous one
+        # prev_height = 0
+        # if isinstance(num_nodes, int):
+        #     for i, layer in enumerate(self.layers):
+        #         height = layer.setup_centered(i, num_nodes, 10, prev_height)
+        #         print(height)
+        #         prev_height = height
+        # elif isinstance(num_nodes, list):
+        #     for i, layer in enumerate(self.layers):
+        #         height = layer.setup_centered(i, num_nodes[i], 10, prev_height)
+        #         print(height)
+        #         prev_height = height
+
         if isinstance(num_nodes, int):
             for i, layer in enumerate(self.layers):
-                layer.setup(i, num_nodes, 10, len(self.layers))
+                layer.setup(i, num_nodes, 10)
         elif isinstance(num_nodes, list):
             for i, layer in enumerate(self.layers):
-                layer.setup(i, num_nodes[i], 10, len(self.layers))
+                layer.setup(i, num_nodes[i], 10)
 
         for i in range(len(self.layers) - 1):
             for j in range(len(self.layers[i].getNodes())):

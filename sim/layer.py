@@ -12,25 +12,55 @@ class Layer:
         self.nodes: list[Node] = []
         self.id: int = id
 
-    def setup(self, dex: int, num_ndoes: int, radius: int, length: int):
+    def setup(self, dex: int, num_ndoes: int, radius: int):
         self.font = pg.sysfont.SysFont("arial", radius)
 
         for i in range(num_ndoes):
             node = Node(i, random.uniform(0.0, 1.0), 0, radius)
 
             pos: list[int] = [
-                (dex * node.getRadius() * 10) + node.getRadius(),
-                (i * node.getRadius() * 2) + node.getRadius(),
+                (dex * radius * 10) + radius * 2,
+                (i * radius * 2) + (radius * 2),
             ]
-
-            # Note: Before, the length (the total number of layers) was used for spacing
-            # pos: list[int] = [
-            #     (dex * node.getRadius() * length) + node.getRadius(),
-            #     (i * node.getRadius() * 2) + node.getRadius(),
-            # ]
 
             node.setCenter(pos)
             self.addNode(node)
+
+    # TODO: Finish this method
+    def setup_centered(self, dex: int, num_ndoes: int, radius: int, prev_height: int) -> int:
+        self.font = pg.sysfont.SysFont("arial", radius)
+
+        def get_layer_height(num_ndoes: int, radius: int) -> int:
+            height = 0
+
+            for i in range(num_ndoes):
+                y = (i * radius * 2) + (radius * 2)
+                height += y // radius
+
+            return height
+
+        layer_height = get_layer_height(num_ndoes, radius)
+
+        for i in range(num_ndoes):
+            node = Node(i, random.uniform(0.0, 1.0), 0, radius)
+
+            # pos: list[int] = [
+            #     (dex * node.getRadius() * 10) + node.getRadius() * 2,
+            #     (i * node.getRadius() * 2)
+            #     + (node.getRadius() * 1.5)
+            #     + (prev_height // 2),
+            # ]
+
+            pos: list[int] = [
+                (dex * radius * 10) + radius() * 2,
+                (i * radius * 2) + (radius * 2) + (prev_height // 2),
+                -(layer_height // 2),
+            ]
+
+            node.setCenter(pos)
+            self.addNode(node)
+
+        return layer_height
 
     def getId(self) -> int:
         return self.id

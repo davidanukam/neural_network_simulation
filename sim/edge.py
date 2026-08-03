@@ -22,20 +22,74 @@ class Edge:
     def turn_off(self):
         self.state = 0
 
-    def draw(self, surface, zoom, cam_x, cam_y, network_line_width):
+    def draw(self, surface, zoom, cam_x, cam_y, network_line_width, node_radius) -> int:
         x1 = self.x1 * zoom + cam_x
         y1 = self.y1 * zoom + cam_y
 
         x2 = self.x2 * zoom + cam_x
         y2 = self.y2 * zoom + cam_y
 
+        screen_radius = max(1, int(node_radius * zoom))
+
+        # NOTE: Keep all edges visible
+        # min_x = min(x1, x2) - screen_radius
+        # max_x = max(x1, x2) + screen_radius
+        # min_y = min(y1, y2) - screen_radius
+        # max_y = max(y1, y2) + screen_radius
+
+        # if (
+        #     max_x >= 0
+        #     and min_x <= self.screenWidth
+        #     and max_y >= 0
+        #     and min_y <= self.screenHeight
+        # ):
+        #     self.color = "white" if self.state == 0 else "yellow"
+
+        #     pg.draw.line(
+        #         surface,
+        #         self.color,
+        #         (int(x1), int(y1)),
+        #         (int(x2), int(y2)),
+        #         network_line_width,
+        #     )
+        #     return 1
+        # return 0
+
+        # NOTE: Remove edges that have offscreen endpoints
+        # if (
+        #     x1 + screen_radius >= 0
+        #     and x2 - screen_radius <= self.screenWidth
+        #     and y1 + screen_radius >= 0
+        #     and y2 - screen_radius <= self.screenHeight
+        # ) and (
+        #     x2 + screen_radius >= 0
+        #     and x1 - screen_radius <= self.screenWidth
+        #     and y2 + screen_radius >= 0
+        #     and y1 - screen_radius <= self.screenHeight
+        # ):
+        #     self.color = "white" if self.state == 0 else "yellow"
+
+        #     pg.draw.line(
+        #         surface,
+        #         self.color,
+        #         (x1, y1),
+        #         (x2, y2),
+        #         network_line_width,
+        #     )
+        #     return 1
+        # return 0
+
+        # NOTE: Remove edges that have offscreen RIGHT, BOTTOM and TOP endpoints
         if (
-            x1 > 0 and x2 < self.screenWidth and y1 > 0 and y2 < self.screenHeight
-        ) and (x2 > 0 and x1 < self.screenWidth and y2 > 0 and y1 < self.screenHeight):
-            if self.state == 0:
-                self.color = "white"
-            else:
-                self.color = "yellow"
+            x2 - screen_radius <= self.screenWidth
+            and y1 + screen_radius >= 0
+            # and y2 - screen_radius <= self.screenHeight
+        ) and (
+            x2 + screen_radius >= 0
+            and y2 + screen_radius >= 0
+            and y1 - screen_radius <= self.screenHeight
+        ):
+            self.color = "white" if self.state == 0 else "yellow"
 
             pg.draw.line(
                 surface,
@@ -44,3 +98,5 @@ class Edge:
                 (x2, y2),
                 network_line_width,
             )
+            return 1
+        return 0

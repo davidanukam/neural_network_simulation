@@ -22,14 +22,14 @@ class Simulation:
         self.zoom_level = 1.0
         self.panning = False
 
-        self.screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
-        pg.display.set_caption("Neural Nodes")
-        pywinstyles.change_header_color(self.screen, "black")
-
         self.clock = pg.time.Clock()
 
+        self.screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
+        pg.display.set_caption(f"Neural Nodes | FPS: {int(self.clock.get_fps())}")
+        pywinstyles.change_header_color(self.screen, "black")
+
         # self.network = Network(self.WIDTH, self.HEIGHT, 100, 10)
-        self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 10, 10])
+        self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 10, 10], 10)
 
     def run(self):
         self.running = True
@@ -65,6 +65,7 @@ class Simulation:
                     self.camera_y = my - (world_m_y * self.zoom_level)
 
             # -- Update --#
+            self.network.update()
 
             # -- Draw --#
             self.screen.fill("black")
@@ -72,6 +73,8 @@ class Simulation:
             self.network.draw(
                 self.screen, self.zoom_level, self.camera_x, self.camera_y
             )
+
+            pg.display.set_caption(f"Neural Nodes | FPS: {int(self.clock.get_fps())}")
 
             pg.display.flip()
             self.clock.tick(self.FPS)

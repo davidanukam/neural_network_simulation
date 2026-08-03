@@ -13,7 +13,7 @@ class Layer:
         self.id: int = id
 
     def setup(self, dex: int, num_ndoes: int, radius: int):
-        self.font = pg.sysfont.SysFont("arial", radius)
+        self.font = pg.sysfont.SysFont("arial", radius * radius)
 
         for i in range(num_ndoes):
             node = Node(i, random.uniform(0.0, 1.0), 0, radius)
@@ -27,7 +27,9 @@ class Layer:
             self.addNode(node)
 
     # TODO: Finish this method
-    def setup_centered(self, dex: int, num_ndoes: int, radius: int, prev_height: int) -> int:
+    def setup_centered(
+        self, dex: int, num_ndoes: int, radius: int, prev_height: int
+    ) -> int:
         self.font = pg.sysfont.SysFont("arial", radius)
 
         def get_layer_height(num_ndoes: int, radius: int) -> int:
@@ -88,21 +90,21 @@ class Layer:
                 self.nodes.remove(node)
 
     def update(self):
-        pass
+        for node in self.nodes:
+            node.setWeight(random.uniform(0.0, 1.0))
 
     def draw(self, surface: pg.SurfaceType, zoom, cam_x, cam_y):
         for node in self.nodes:
-
             screen_x = int(node.getCenter()[0] * zoom + cam_x)
             screen_y = int(node.getCenter()[1] * zoom + cam_y)
 
             screen_radius = max(1, int(node.getRadius() * zoom))
 
             if (
-                screen_x - screen_radius > 0
-                and screen_x + screen_radius < self.screenWidth
-                and screen_y - screen_radius > 0
-                and screen_y + screen_radius < self.screenHeight
+                screen_x + screen_radius >= 0
+                and screen_x - screen_radius <= self.screenWidth
+                and screen_y + screen_radius >= 0
+                and screen_y - screen_radius <= self.screenHeight
             ):
                 pg.draw.circle(
                     surface,
@@ -111,10 +113,7 @@ class Layer:
                     screen_radius,
                 )
 
-                if node.state == 0:
-                    node.color = "white"
-                else:
-                    node.color = "yellow"
+                node.color = "white" if node.state == 0 else "yellow"
 
                 pg.draw.circle(
                     surface,
@@ -124,17 +123,24 @@ class Layer:
                     3,
                 )
 
-                weight_surface = self.font.render(
-                    f"{round(node.getWeight(), 1)}", True, node.color
-                )
-                weight_rect = weight_surface.get_rect()
-                weight_rect.x = (
-                    node.getCenter()[0] - (weight_rect.w // 2)
-                ) * zoom + cam_x
-                weight_rect.y = (
-                    node.getCenter()[1] - (weight_rect.h // 2)
-                ) * zoom + cam_y
-                scaled_weight_surface = pg.transform.smoothscale(
-                    weight_surface, (screen_radius, screen_radius)
-                )
-                surface.blit(scaled_weight_surface, weight_rect)
+                weight_text = f"{round(node.getWeight(), 1)}"
+                weight_surface = self.font.render(weight_text, True, node.color)
+
+                # Scale proportionally based on node radius
+                orig_w, orig_h = weight_surface.get_size()
+                target_h = int(screen_radius * 0.8)  # Leave padding around text
+
+                if orig_h > 0 and target_h > 0:
+                    aspect_ratio = orig_w / orig_h
+                    target_w = int(target_h * aspect_ratio)
+
+                    scaled_weight_surface = pg.transform.smoothscale(
+                        weight_surface, (target_w, target_h)
+                    )
+
+                    # Center the text directly onto (screen_x, screen_y)
+                    scaled_weight_rect = scaled_weight_surface.get_rect(
+                        center=(screen_x, screen_y)
+                    )
+
+                    surface.blit(scaled_weight_surface, scaled_weight_rect)

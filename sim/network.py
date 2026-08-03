@@ -7,8 +7,14 @@ from edge import Edge
 
 
 class Network:
+
     def __init__(
-        self, width: int, height: int, num_layers: int, num_nodes: int | list[int]
+        self,
+        width: int,
+        height: int,
+        num_layers: int,
+        num_nodes: int | list[int],
+        node_radius: int,
     ):
         self.layers: list[Layer] = []
         self.edges: list[Edge] = []
@@ -17,10 +23,11 @@ class Network:
         self.height: int = height
 
         self.network_line_width = 2
+        self.node_radius = node_radius
 
-        self.setup(num_layers, num_nodes)
+        self.setup(num_layers, num_nodes, self.node_radius)
 
-    def setup(self, num_layers: int, num_nodes: int | list[int]):
+    def setup(self, num_layers: int, num_nodes: int | list[int], node_radius: int):
         Layer.screenWidth = self.width
         Layer.screenHeight = self.height
         Edge.screenWidth = self.width
@@ -45,10 +52,10 @@ class Network:
 
         if isinstance(num_nodes, int):
             for i, layer in enumerate(self.layers):
-                layer.setup(i, num_nodes, 10)
+                layer.setup(i, num_nodes, node_radius)
         elif isinstance(num_nodes, list):
             for i, layer in enumerate(self.layers):
-                layer.setup(i, num_nodes[i], 10)
+                layer.setup(i, num_nodes[i], node_radius)
 
         for i in range(len(self.layers) - 1):
             for j in range(len(self.layers[i].getNodes())):
@@ -90,11 +97,16 @@ class Network:
                 self.layers.remove(layer)
 
     def update(self):
-        pass
+        for layer in self.layers:
+            layer.update()
 
     def draw(self, surface: pg.SurfaceType, zoom, cam_x, cam_y):
+        num = 0
         for edge in self.edges:
-            edge.draw(surface, zoom, cam_x, cam_y, self.network_line_width)
+            num += edge.draw(
+                surface, zoom, cam_x, cam_y, self.network_line_width, self.node_radius
+            )
+        # print(num) # Debugging
 
         for layer in self.layers:
             layer.draw(surface, zoom, cam_x, cam_y)

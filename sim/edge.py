@@ -11,6 +11,7 @@ class Edge:
         self.x2: int = x2
         self.y2: int = y2
         self.state: bool = state
+        self.color = "white"
 
     def get_state(self) -> bool:
         return self.state
@@ -31,9 +32,14 @@ class Edge:
         if (
             x1 > 0 and x2 < self.screenWidth and y1 > 0 and y2 < self.screenHeight
         ) and (x2 > 0 and x1 < self.screenWidth and y2 > 0 and y1 < self.screenHeight):
+            if self.state == 0:
+                self.color = "white"
+            else:
+                self.color = "yellow"
+
             pg.draw.line(
                 surface,
-                "white",  # self.colors[i]
+                self.color,
                 (x1, y1),
                 (x2, y2),
                 network_line_width,

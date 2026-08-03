@@ -16,7 +16,7 @@ class Layer:
         self.font = pg.sysfont.SysFont("arial", radius)
 
         for i in range(num_ndoes):
-            node = Node(i, random.uniform(0.0, 1.0), radius)
+            node = Node(i, random.uniform(0.0, 1.0), 0, radius)
 
             pos: list[int] = [
                 (dex * node.getRadius() * 10) + node.getRadius(),
@@ -35,7 +35,7 @@ class Layer:
     def getId(self) -> int:
         return self.id
 
-    def setId(self, new_id: int) -> int:
+    def setId(self, new_id: int):
         self.id = new_id
 
     def getNodes(self) -> list[Node]:
@@ -80,16 +80,22 @@ class Layer:
                     (screen_x, screen_y),
                     screen_radius,
                 )
+
+                if node.state == 0:
+                    node.color = "white"
+                else:
+                    node.color = "yellow"
+
                 pg.draw.circle(
                     surface,
-                    "white",
+                    node.color,
                     (screen_x, screen_y),
                     screen_radius,
                     3,
                 )
 
                 weight_surface = self.font.render(
-                    f"{round(node.getWeight(), 1)}", True, "white"
+                    f"{round(node.getWeight(), 1)}", True, node.color
                 )
                 weight_rect = weight_surface.get_rect()
                 weight_rect.x = (

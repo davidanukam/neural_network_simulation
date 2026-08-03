@@ -15,18 +15,7 @@ class Network:
 
         self.width: int = width
         self.height: int = height
-        self.colors = [
-            "red",
-            "orange",
-            "yellow",
-            "green",
-            "blue",
-            "purple",
-            "pink",
-            "brown",
-            "gray",
-            "white",
-        ]
+
         self.network_line_width = 2
 
         self.setup(num_layers, num_nodes)
@@ -60,6 +49,16 @@ class Network:
                             0,
                         )
                     )
+
+        # Note: Testing node and edge state and color changes
+        # for i in range(random.randint(1, len(self.edges))):
+        #     dex = random.randint(0, len(self.edges) - 1)
+        #     self.edges[dex].turn_on()
+
+        # for i in range(random.randint(1, len(self.layers))):
+        #     for j in range(random.randint(1, len(self.layers[i].getNodes()))):
+        #         dex = random.randint(0, len(self.layers[i].getNodes()) - 1)
+        #         self.layers[i].getNodes()[dex].turn_on()
 
     def addLayer(self, new_layer: Layer):
         if new_layer not in self.layers:

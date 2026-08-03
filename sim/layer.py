@@ -19,9 +19,15 @@ class Layer:
             node = Node(i, random.uniform(0.0, 1.0), radius)
 
             pos: list[int] = [
-                (dex * node.getRadius() * length) + node.getRadius(),
+                (dex * node.getRadius() * 10) + node.getRadius(),
                 (i * node.getRadius() * 2) + node.getRadius(),
             ]
+
+            # Note: Before, the length (the total number of layers) was used for spacing
+            # pos: list[int] = [
+            #     (dex * node.getRadius() * length) + node.getRadius(),
+            #     (i * node.getRadius() * 2) + node.getRadius(),
+            # ]
 
             node.setCenter(pos)
             self.addNode(node)

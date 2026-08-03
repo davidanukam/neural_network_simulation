@@ -28,6 +28,7 @@ class Simulation:
 
         self.clock = pg.time.Clock()
 
+        # self.network = Network(self.WIDTH, self.HEIGHT, 100, 10)
         self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 10, 10])
 
     def run(self):

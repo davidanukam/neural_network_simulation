@@ -19,6 +19,7 @@ class Simulation:
 
         self.camera_x = 0
         self.camera_y = 0
+        self.zoom_level = 1.0
         self.panning = False
 
         self.screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
@@ -32,15 +33,11 @@ class Simulation:
     def run(self):
         self.running = True
         while self.running:
+            mx, my = pg.mouse.get_pos()
+
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     self.running = False
-
-                elif event.type == pg.MOUSEWHEEL:
-                    if event.y > 0:
-                        self.network.zoomIn()
-                    elif event.y < 0:
-                        self.network.zoomOut()
 
                 elif event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 1:
@@ -54,12 +51,26 @@ class Simulation:
                     self.camera_x += event.rel[0]
                     self.camera_y += event.rel[1]
 
+                elif event.type == pg.MOUSEWHEEL:
+                    world_m_x = (mx - self.camera_x) / self.zoom_level
+                    world_m_y = (my - self.camera_y) / self.zoom_level
+
+                    zoom_factor = 1.1 if event.y > 0 else (1 / 1.1)
+                    new_zoom = self.zoom_level * zoom_factor
+
+                    self.zoom_level = max(1.0, min(10.0, new_zoom))
+
+                    self.camera_x = mx - (world_m_x * self.zoom_level)
+                    self.camera_y = my - (world_m_y * self.zoom_level)
+
             # -- Update --#
 
             # -- Draw --#
             self.screen.fill("black")
 
-            self.network.draw(self.screen, self.camera_x, self.camera_y)
+            self.network.draw(
+                self.screen, self.zoom_level, self.camera_x, self.camera_y
+            )
 
             pg.display.flip()
             self.clock.tick(self.FPS)

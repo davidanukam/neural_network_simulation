@@ -2,7 +2,7 @@ class Node:
     def __init__(self, id: int, weight: float, radius: int):
         self.id = id
         self.weight = weight
-        self.center: tuple = (0, 0)
+        self.center: list[int] = [0, 0]
         self.radius: int = radius
 
     def getId(self) -> int:
@@ -17,10 +17,10 @@ class Node:
     def setWeight(self, new_weight: float) -> float:
         self.weight = new_weight
 
-    def getCenter(self) -> tuple:
+    def getCenter(self) -> list[int]:
         return self.center
 
-    def setCenter(self, new_center: tuple):
+    def setCenter(self, new_center: list[int]):
         self.center = new_center
 
     def getRadius(self) -> int:

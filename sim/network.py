@@ -53,45 +53,10 @@ class Network:
             if layer in self.layers:
                 self.layers.remove(layer)
 
-    def zoomIn(self):
-        mx, my = pg.mouse.get_pos()
-        for i, layer in enumerate(self.layers):
-            for node in layer.getNodes():
-                cx = node.getCenter()[0]
-                cy = node.getCenter()[1]
-                dx = cx - mx
-                dy = cy - my
-                udx = dx / max(1, abs(dx))
-                udy = dy / max(1, abs(dy))
+    def update(self):
+        pass
 
-                if node.getRadius() < 100:
-                    node.setRadius(int(min(100, node.getRadius() + 1)))
-                    # node.setCenter(
-                    #     (node.getCenter()[0] - udx * 2, node.getCenter()[1] - udy * 2)
-                    # )
-
-            layer.fixSpacing(i, len(self.layers))
-
-    def zoomOut(self):
-        mx, my = pg.mouse.get_pos()
-        for i, layer in enumerate(self.layers):
-            for node in layer.getNodes():
-                cx = node.getCenter()[0]
-                cy = node.getCenter()[1]
-                dx = cx - mx
-                dy = cy - my
-                udx = dx / max(1, abs(dx))
-                udy = dy / max(1, abs(dy))
-
-                if node.getRadius() > 10:
-                    node.setRadius(int(max(10, node.getRadius() - 1)))
-                    # node.setCenter(
-                    #     (node.getCenter()[0] + udx * 2, node.getCenter()[1] + udy * 2)
-                    # )
-
-            layer.fixSpacing(i, len(self.layers))
-
-    def draw(self, surface, cam_x, cam_y):
+    def draw(self, surface, zoom, cam_x, cam_y):
         for i in range(len(self.layers) - 1):
             for j in range(len(self.layers[i].getNodes())):
                 for k in range(len(self.layers[i + 1].getNodes())):
@@ -99,14 +64,16 @@ class Network:
                         surface,
                         self.colors[i],
                         (
-                            self.layers[i].getNodes()[j].getCenter()[0] + cam_x,
-                            self.layers[i].getNodes()[j].getCenter()[1] + cam_y,
+                            self.layers[i].getNodes()[j].getCenter()[0] * zoom + cam_x,
+                            self.layers[i].getNodes()[j].getCenter()[1] * zoom + cam_y,
                         ),
                         (
-                            self.layers[i + 1].getNodes()[k].getCenter()[0] + cam_x,
-                            self.layers[i + 1].getNodes()[k].getCenter()[1] + cam_y,
+                            self.layers[i + 1].getNodes()[k].getCenter()[0] * zoom
+                            + cam_x,
+                            self.layers[i + 1].getNodes()[k].getCenter()[1] * zoom
+                            + cam_y,
                         ),
                         self.network_line_width,
                     )
-        for i, layer in enumerate(self.layers):
-            layer.draw(surface, cam_x, cam_y)
+        for layer in self.layers:
+            layer.draw(surface, zoom, cam_x, cam_y)

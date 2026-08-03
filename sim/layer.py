@@ -13,6 +13,8 @@ class Layer:
         self.id: int = id
 
     def setup(self, dex: int, num_ndoes: int, radius: int, length: int):
+        self.font = pg.sysfont.SysFont("arial", radius)
+
         for i in range(num_ndoes):
             node = Node(i, random.uniform(0.0, 1.0), radius)
 
@@ -23,16 +25,6 @@ class Layer:
 
             node.setCenter(pos)
             self.addNode(node)
-
-    # NOTE: Can Remove Later
-    def fixSpacing(self, dex: int, length: int):
-        for i, node in enumerate(self.nodes):
-            pos: list[int] = [
-                (dex * node.getRadius() * length) + node.getRadius(),
-                (i * node.getRadius() * 2) + node.getRadius(),
-            ]
-
-            node.setCenter(pos)
 
     def getId(self) -> int:
         return self.id
@@ -62,7 +54,7 @@ class Layer:
     def update(self):
         pass
 
-    def draw(self, surface, zoom, cam_x, cam_y):
+    def draw(self, surface: pg.SurfaceType, zoom, cam_x, cam_y):
         for node in self.nodes:
 
             screen_x = int(node.getCenter()[0] * zoom + cam_x)
@@ -70,16 +62,37 @@ class Layer:
 
             screen_radius = max(1, int(node.getRadius() * zoom))
 
-            pg.draw.circle(
-                surface,
-                "black",
-                (screen_x, screen_y),
-                screen_radius,
-            )
-            pg.draw.circle(
-                surface,
-                "white",
-                (screen_x, screen_y),
-                screen_radius,
-                3,
-            )
+            if (
+                screen_x - screen_radius > 0
+                and screen_x + screen_radius < self.screenWidth
+                and screen_y - screen_radius > 0
+                and screen_y + screen_radius < self.screenHeight
+            ):
+                pg.draw.circle(
+                    surface,
+                    "black",
+                    (screen_x, screen_y),
+                    screen_radius,
+                )
+                pg.draw.circle(
+                    surface,
+                    "white",
+                    (screen_x, screen_y),
+                    screen_radius,
+                    3,
+                )
+
+                weight_surface = self.font.render(
+                    f"{round(node.getWeight(), 1)}", True, "white"
+                )
+                weight_rect = weight_surface.get_rect()
+                weight_rect.x = (
+                    node.getCenter()[0] - (weight_rect.w // 2)
+                ) * zoom + cam_x
+                weight_rect.y = (
+                    node.getCenter()[1] - (weight_rect.h // 2)
+                ) * zoom + cam_y
+                scaled_weight_surface = pg.transform.smoothscale(
+                    weight_surface, (screen_radius, screen_radius)
+                )
+                surface.blit(scaled_weight_surface, weight_rect)

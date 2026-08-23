@@ -29,7 +29,7 @@ class Simulation:
         pywinstyles.change_header_color(self.screen, "black")
 
         # self.network = Network(self.WIDTH, self.HEIGHT, 100, 10)
-        self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 128, 10], 10)
+        self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 10, 10], 10) # [784, 128, 10]
 
     def run(self):
         self.running = True
@@ -63,6 +63,14 @@ class Simulation:
 
                     self.camera_x = mx - (world_m_x * self.zoom_level)
                     self.camera_y = my - (world_m_y * self.zoom_level)
+
+                elif event.type == pg.KEYDOWN:
+                    if event.key == pg.K_r:
+                        self.camera_x = 0
+                        self.camera_y = 0
+
+                    elif event.key == pg.K_0:
+                        self.zoom_level = 1.0
 
             # -- Update --#
             self.network.update()

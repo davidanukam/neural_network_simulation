@@ -1,9 +1,9 @@
 import pygame as pg
 import random
 
-from node import Node
-from layer import Layer
-from edge import Edge
+from package.sim.node import Node
+from package.sim.layer import Layer
+from package.sim.edge import Edge
 
 
 class Network:
@@ -95,6 +95,9 @@ class Network:
         if len(self.layers):
             if layer in self.layers:
                 self.layers.remove(layer)
+
+    def getLayers(self) -> list[Layer]:
+        return self.layers
 
     # Note: Testing states and weights
     def update(self):

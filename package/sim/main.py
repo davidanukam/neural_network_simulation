@@ -2,9 +2,11 @@ import pygame as pg
 import pywinstyles
 import sys
 
-from node import Node
-from layer import Layer
-from network import Network
+from package.mnist import mnist
+
+from package.sim.node import Node
+from package.sim.layer import Layer
+from package.sim.network import Network
 
 
 class Simulation:
@@ -29,7 +31,22 @@ class Simulation:
         pywinstyles.change_header_color(self.screen, "black")
 
         # self.network = Network(self.WIDTH, self.HEIGHT, 100, 10)
-        self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 10, 10], 10) # [784, 128, 10]
+        # [784, 128, 10]
+        self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 10, 10], 10)
+
+        # --- MNIST --- #
+        self.W1, self.b1, self.W2, self.b2 = mnist.init_params()
+        self.update_weights()
+
+    def update_weights(self):
+        W1_sum = [sum(row) / len(row) for row in self.W1.T]
+        W2_sum = [sum(row) / len(row) for row in self.W2.T]
+
+        for i, node in enumerate(self.network.getLayers()[0].getNodes()):
+            node.setWeight(W1_sum[i])
+
+        for i, node in enumerate(self.network.getLayers()[1].getNodes()):
+            node.setWeight(W2_sum[i])
 
     def run(self):
         self.running = True
@@ -73,7 +90,11 @@ class Simulation:
                         self.zoom_level = 1.0
 
             # -- Update --#
-            self.network.update()
+            # self.network.update()
+            self.W1, self.b1, self.W2, self.b2 = mnist.test(
+                self.W1, self.b1, self.W2, self.b2, mnist.X_train, mnist.Y_train, 0.1
+            )
+            self.update_weights()
 
             # -- Draw --#
             self.screen.fill("black")

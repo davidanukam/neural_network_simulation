@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-data_frame: pd.DataFrame = pd.read_csv("data/train.csv")
+data_frame: pd.DataFrame = pd.read_csv("package/data/train.csv")
 
 data: np.ndarray = np.array(data_frame)
 m, n = data.shape
@@ -160,4 +160,30 @@ def gradient_descent(
     return W1, b1, W2, b2
 
 
-W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 500, 0.1)
+# W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 500, 0.1)
+
+# W1, b1, W2, b2 = init_params()
+
+
+def test(
+    W1: np.ndarray,
+    b1: np.ndarray,
+    W2: np.ndarray,
+    b2: np.ndarray,
+    X: np.ndarray,
+    Y: np.ndarray,
+    alpha: float,
+):
+    Z1, A1, Z2, A2 = forward_prop(W1, b1, W2, b2, X)
+    dW1, db1, dW2, db2 = back_prop(Z1, A1, Z2, A2, W2, X, Y)
+    W1, b1, W2, b2 = update_params(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha)
+
+    # print("Accuracy:", get_accuracy(get_predictions(A2), Y))
+
+    return W1, b1, W2, b2
+
+
+# W1, b1, W2, b2 = init_params()
+
+# for i in range(100):
+#     W1, b1, W2, b2 = test(W1, b1, W2, b2, X_train, Y_train, 0.1)

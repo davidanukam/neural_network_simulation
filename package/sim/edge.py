@@ -10,7 +10,7 @@ class Edge:
         self.y1: int = y1
         self.x2: int = x2
         self.y2: int = y2
-        self.state: bool = state
+        self.state: bool = 1
         self.color = "white"
 
     def get_state(self) -> bool:

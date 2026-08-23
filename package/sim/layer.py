@@ -1,7 +1,7 @@
 import pygame as pg
 import random
 
-from node import Node
+from package.sim.node import Node
 
 
 class Layer:
@@ -16,7 +16,8 @@ class Layer:
         self.font = pg.sysfont.SysFont("arial", radius * radius)
 
         for i in range(num_ndoes):
-            node = Node(i, random.uniform(0.0, 1.0), 0, radius)
+            node = Node(i, 0.0, 0, radius)
+            # node = Node(i, random.uniform(0.0, 1.0), 0, radius)
 
             pos: list[int] = [
                 (dex * radius * 10) + radius * 2,
@@ -127,7 +128,8 @@ class Layer:
                     3,
                 )
 
-                weight_text = f"{round(node.getWeight(), 1)}"
+                weight_text = f"{round(node.getWeight(), 20)}"
+                # weight_text = f"{round(node.getWeight(), 1)}"
                 weight_surface = self.font.render(weight_text, True, node.color)
 
                 # Scale proportionally based on node radius

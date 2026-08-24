@@ -131,12 +131,12 @@ def update_params(
     return W1, b1, W2, b2
 
 
-def get_predictions(A2: np.ndarray):
+def get_predictions(A2: np.ndarray) -> np.ndarray:
     return np.argmax(A2, 0)
 
 
 def get_accuracy(predictions, Y: np.ndarray):
-    print(predictions, Y)
+    # print(predictions, Y)
     return np.sum(predictions == Y) / Y.size
 
 
@@ -180,7 +180,7 @@ def test(
 
     # print("Accuracy:", get_accuracy(get_predictions(A2), Y))
 
-    return W1, b1, W2, b2, get_predictions(A2)
+    return W1, b1, W2, b2, get_predictions(A2), get_accuracy(get_predictions(A2), Y)
 
 
 # W1, b1, W2, b2 = init_params()

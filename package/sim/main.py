@@ -1,11 +1,10 @@
 import pygame as pg
 import pywinstyles
 import sys
+import random
 
 from package.mnist import mnist
 
-from package.sim.node import Node
-from package.sim.layer import Layer
 from package.sim.network import Network
 
 
@@ -19,12 +18,17 @@ class Simulation:
         self.WIDTH, self.HEIGHT = 1280, 720
         self.FPS = 60
 
+        self.sim_area_width = self.WIDTH - 500
+        self.sim_area_height = self.HEIGHT
+
         self.camera_x = 0
         self.camera_y = 0
         self.zoom_level = 1.0
         self.panning = False
 
         self.clock = pg.time.Clock()
+        self.timer = 1
+        self.waiter = 1
 
         self.screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
         pg.display.set_caption(f"Neural Nodes | FPS: {int(self.clock.get_fps())}")
@@ -32,10 +36,13 @@ class Simulation:
 
         # self.network = Network(self.WIDTH, self.HEIGHT, 100, 10)
         # [784, 128, 10]
-        self.network = Network(self.WIDTH, self.HEIGHT, 3, [784, 10, 10], 10)
+        self.network = Network(
+            self.sim_area_width, self.sim_area_height, 3, [784, 10, 10], 10
+        )
 
         # --- MNIST --- #
         self.W1, self.b1, self.W2, self.b2 = mnist.init_params()
+        self.predict = mnist.Y_train
         self.update_weights()
 
     def update_weights(self):
@@ -48,6 +55,12 @@ class Simulation:
         for i, node in enumerate(self.network.getLayers()[1].getNodes()):
             node.setWeight(W2_sum[i])
 
+        for i, node in enumerate(self.network.getLayers()[2].getNodes()):
+            node.setWeight(0.0)
+
+        rand_idx = random.randint(0, len(self.predict))
+        self.network.getLayers()[2].getNodes()[self.predict[rand_idx]].setWeight(1.0)
+
     def run(self):
         self.running = True
         while self.running:
@@ -59,7 +72,11 @@ class Simulation:
 
                 elif event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 1:
-                        self.panning = True
+                        if (
+                            event.pos[0] < self.sim_area_width
+                            and event.pos[1] < self.sim_area_height
+                        ):
+                            self.panning = True
 
                 elif event.type == pg.MOUSEBUTTONUP:
                     if event.button == 1:
@@ -91,10 +108,18 @@ class Simulation:
 
             # -- Update --#
             # self.network.update()
-            self.W1, self.b1, self.W2, self.b2 = mnist.test(
-                self.W1, self.b1, self.W2, self.b2, mnist.X_train, mnist.Y_train, 0.1
-            )
-            self.update_weights()
+
+            if self.timer % (self.FPS * self.waiter) == 0:
+                self.W1, self.b1, self.W2, self.b2, self.predict = mnist.test(
+                    self.W1,
+                    self.b1,
+                    self.W2,
+                    self.b2,
+                    mnist.X_train,
+                    mnist.Y_train,
+                    0.1,
+                )
+                self.update_weights()
 
             # -- Draw --#
             self.screen.fill("black")
@@ -105,6 +130,7 @@ class Simulation:
 
             pg.display.set_caption(f"Neural Nodes | FPS: {int(self.clock.get_fps())}")
 
+            self.timer += 1
             pg.display.flip()
             self.clock.tick(self.FPS)
 

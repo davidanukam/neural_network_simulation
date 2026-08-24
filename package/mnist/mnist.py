@@ -180,7 +180,7 @@ def test(
 
     # print("Accuracy:", get_accuracy(get_predictions(A2), Y))
 
-    return W1, b1, W2, b2
+    return W1, b1, W2, b2, get_predictions(A2)
 
 
 # W1, b1, W2, b2 = init_params()

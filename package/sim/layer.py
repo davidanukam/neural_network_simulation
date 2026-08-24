@@ -13,7 +13,8 @@ class Layer:
         self.id: int = id
 
     def setup(self, dex: int, num_ndoes: int, radius: int):
-        self.font = pg.sysfont.SysFont("arial", radius * radius)
+        # self.font = pg.sysfont.SysFont("arial", radius * 2)
+        self.font = pg.sysfont.SysFont("arial", 50)
 
         for i in range(num_ndoes):
             node = Node(i, 0.0, 0, radius)
@@ -129,22 +130,27 @@ class Layer:
                 )
 
                 weight_text = f"{round(node.getWeight(), 20)}"
-                # weight_text = f"{round(node.getWeight(), 1)}"
                 weight_surface = self.font.render(weight_text, True, node.color)
 
-                # Scale proportionally based on node radius
                 orig_w, orig_h = weight_surface.get_size()
-                target_h = int(screen_radius * 0.8)  # Leave padding around text
 
-                if orig_h > 0 and target_h > 0:
-                    aspect_ratio = orig_w / orig_h
-                    target_w = int(target_h * aspect_ratio)
+                if orig_w > 0 and orig_h > 0:
+                    # 1. Define maximum allowed bounding box inside the node
+                    # Use ~1.6 (or 80% of diameter 2.0) to leave padding
+                    max_w = int(screen_radius * 1.6)
+                    max_h = int(screen_radius * 1.6)
 
+                    # 2. Calculate scale factor to fit WITHIN max_w and max_h while maintaining aspect ratio
+                    scale = min(max_w / orig_w, max_h / orig_h)
+
+                    target_w = max(1, int(orig_w * scale))
+                    target_h = max(1, int(orig_h * scale))
+
+                    # 3. Smoothscale and blit
                     scaled_weight_surface = pg.transform.smoothscale(
                         weight_surface, (target_w, target_h)
                     )
 
-                    # Center the text directly onto (screen_x, screen_y)
                     scaled_weight_rect = scaled_weight_surface.get_rect(
                         center=(screen_x, screen_y)
                     )

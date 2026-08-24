@@ -120,3 +120,5 @@ class Network:
 
         for layer in self.layers:
             layer.draw(surface, zoom, cam_x, cam_y)
+
+        pg.draw.line(surface, "red", (self.width, 0), (self.width, self.height), 5)

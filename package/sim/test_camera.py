@@ -23,7 +23,7 @@ class Object:
         return self.rect.center
 
     def update(self, zoom, cam_x, cam_y):
-        # 1. Scale the width and height for screen rendering
+        # Scale the width and height for screen rendering
         scaled_w = int(self.w * zoom)
         scaled_h = int(self.h * zoom)
 
@@ -31,7 +31,7 @@ class Object:
         self.rect.w = max(1, scaled_w)
         self.rect.h = max(1, scaled_h)
 
-        # 2. Translate world position to screen position
+        # Translate world position to screen position
         self.rect.x = int(self.x * zoom + cam_x)
         self.rect.y = int(self.y * zoom + cam_y)
 
@@ -73,18 +73,18 @@ while running:
 
         # --- GLOBAL ZOOM MECHANIC ---
         elif event.type == pg.MOUSEWHEEL:
-            # 1. Capture where the mouse is in world space before zooming
+            # Capture where the mouse is in world space before zooming
             world_m_x = (mx - camera_x) / zoom_level
             world_m_y = (my - camera_y) / zoom_level
 
-            # 2. Apply multiplicative zoom factors
+            # Apply multiplicative zoom factors
             zoom_factor = 1.1 if event.y > 0 else (1 / 1.1)
             new_zoom = zoom_level * zoom_factor
 
             # Clamp the zoom so things don't disappear or instantly crash the engine
             zoom_level = max(0.1, min(10.0, new_zoom))
 
-            # 3. Readjust camera position so that the world point remains under the screen mouse coordinates
+            # Readjust camera position so that the world point remains under the screen mouse coordinates
             camera_x = mx - (world_m_x * zoom_level)
             camera_y = my - (world_m_y * zoom_level)
 

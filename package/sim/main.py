@@ -74,7 +74,7 @@ class Simulation:
         - img_array: numpy array of shape (784,) or (28, 28)
         - scale_factor: upscale multiplier (e.g., 10 turns 28x28 into 280x280)
         """
-        # 1. Ensure 1D array of 784 elements regardless of input shape (784, 1), (1, 784), or (784,)
+        # Ensure 1D array of 784 elements regardless of input shape (784, 1), (1, 784), or (784,)
         img_flat = img_array.flatten()
 
         if img_flat.size != 784:
@@ -82,23 +82,23 @@ class Simulation:
                 f"Expected 784 pixels for MNIST image, got {img_flat.size}"
             )
 
-        # 1. Reshape to 28x28 if 1D flat array
+        # Reshape to 28x28 if 1D flat array
         img_2d = img_flat.reshape((28, 28))
 
-        # 2. Scale float values [0.0, 1.0] to integer pixel values [0, 255] if necessary
+        # Scale float values [0.0, 1.0] to integer pixel values [0, 255] if necessary
         if img_2d.max() <= 1.0:
             img_2d = img_2d * 255.0
 
-        # 3. Ensure uint8 data type and transpose (X, Y) for Pygame
+        # Ensure uint8 data type and transpose (X, Y) for Pygame
         img_uint8 = img_2d.astype(mnist.np.uint8).T
 
-        # 4. Repeat 2D grayscale values into 3D RGB channels (28, 28, 3)
+        # Repeat 2D grayscale values into 3D RGB channels (28, 28, 3)
         rgb_array = mnist.np.repeat(img_uint8[:, :, mnist.np.newaxis], 3, axis=2)
 
-        # 5. Create Pygame surface directly from the array
+        # Create Pygame surface directly from the array
         surface = pg.surfarray.make_surface(rgb_array)
 
-        # 6. Upscale (28x28 is tiny on modern displays)
+        # Upscale (28x28 is tiny on modern displays)
         if scale_factor > 1:
             w, h = surface.get_size()
             surface = pg.transform.scale(surface, (w * scale_factor, h * scale_factor))
@@ -106,12 +106,12 @@ class Simulation:
         return surface
 
     def draw_image_and_prediction(self):
-        # 1. Fetch labels and the target image from X_train
+        # Fetch labels and the target image from X_train
         predicted_label = self.predict[self.rand_idx]
         actual_label = mnist.Y_train[self.rand_idx]
         actual_img_array = mnist.X_train[:, self.rand_idx]
 
-        # 2. Find a sample in X_train that actually belongs to the PREDICTED class
+        # Find a sample in X_train that actually belongs to the PREDICTED class
         # Get all indices in Y_train matching predicted_label
         pred_indices = mnist.np.where(mnist.Y_train == predicted_label)[0]
 
@@ -119,11 +119,11 @@ class Simulation:
         predicted_sample_idx = pred_indices[0]
         predicted_img_array = mnist.X_train[:, predicted_sample_idx]
 
-        # 3. Render surfaces
+        # Render surfaces
         pred_surf = self.ndarray_to_surface(predicted_img_array, scale_factor=6)
         actual_surf = self.ndarray_to_surface(actual_img_array, scale_factor=6)
 
-        # 4. Render text surfaces
+        # Render text surfaces
         pred_text_surf = self.font2.render(
             f"Prediction: {predicted_label}", True, (255, 255, 255)
         )
@@ -134,7 +134,7 @@ class Simulation:
             f"Accuracy: {self.acc}", True, (255, 255, 255)
         )
 
-        # 5. Position and blit elements vertically
+        # Position and blit elements vertically
         start_x = self.sim_area_width + 150
         current_y = 50
         spacing = 15
